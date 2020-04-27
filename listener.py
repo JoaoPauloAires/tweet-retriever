@@ -18,11 +18,17 @@ output_en = open(OUTPUT_EN, 'w')
 class MyStreamListener(tweepy.StreamListener):
 
     def on_status(self, status):
-        if status.lang in LANGS:
+        if status.lang in LANGS and not status.retweeted and 'RT @' not in status.text:
             if status.lang == 'pt':
-                output_pt.write(status.full_text + "\n--\n")
-            if status.lang == 'en':
-                output_en.write(status.full_text + "\n--\n")	
+                if status.truncated:
+                    output_pt.write(status.extended_tweet['full_text'] + "\n--\n")
+                else:
+                    output_pt.write(status.text + "\n--\n")
+            elif status.lang == 'en':
+                if status.truncated:
+                    output_en.write(status.extended_tweet['full_text'] + "\n--\n")
+                else:
+                    output_en.write(status.text + "\n--\n")	
 
     def on_error(self, status_code):
         if status_code == 420:
