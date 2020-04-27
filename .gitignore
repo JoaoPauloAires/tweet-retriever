@@ -1,2 +1,3 @@
 *.pyc
+tweets.txt
 credentials.py
